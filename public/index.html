@@ -2,16 +2,72 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>My Calculator</title>
+<title>My Calculators</title>
 <style>
-body{font-family:sans-serif;background:#1e1e2f;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;}
-.calculator{background:#2b2b3d;border-radius:12px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.5);width:300px;}
-#display{width:100%;height:60px;font-size:28px;text-align:right;background:#111;color:#fff;border:none;border-radius:8px;margin-bottom:15px;padding:0 15px;box-sizing:border-box;}
-.buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-button{padding:18px 0;font-size:18px;border:none;border-radius:8px;background:#3d3d55;color:#fff;cursor:pointer;}
+body{
+  font-family:sans-serif;
+  background:#1e1e2f;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  min-height:100vh;
+  margin:0;
+  padding:40px 20px;
+  gap:30px;
+  flex-wrap:wrap;
+}
+.calc-block{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.calc-title{
+  color:#fff;
+  margin-bottom:15px;
+  font-size:18px;
+}
+.calculator{
+  background:#2b2b3d;
+  border-radius:12px;
+  padding:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+.basic-calc{width:280px;}
+.sci-calc{width:400px;}
+.display{
+  width:100%;
+  height:60px;
+  font-size:24px;
+  text-align:right;
+  background:#111;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  margin-bottom:15px;
+  padding:0 15px;
+  box-sizing:border-box;
+  overflow-x:auto;
+}
+.buttons{
+  display:grid;
+  gap:8px;
+}
+.basic-calc .buttons{grid-template-columns:repeat(4,1fr);}
+.sci-calc .buttons{grid-template-columns:repeat(5,1fr);}
+button{
+  padding:16px 0;
+  font-size:16px;
+  border:none;
+  border-radius:8px;
+  background:#3d3d55;
+  color:#fff;
+  cursor:pointer;
+}
 button:hover{background:#52527a;}
 button.operator{background:#ff9f43;}
 button.operator:hover{background:#ffb26b;}
+button.func{background:#5a67d8;}
+button.func:hover{background:#7a86e8;}
 button.equals{background:#2ecc71;grid-column:span 2;}
 button.equals:hover{background:#4bdf8b;}
 button.clear{background:#e74c3c;}
@@ -19,50 +75,151 @@ button.clear:hover{background:#ff6b5b;}
 </style>
 </head>
 <body>
-<div class="calculator">
-<input type="text" id="display" disabled>
-<div class="buttons">
-<button class="clear" id="btn-clear">C</button>
-<button id="btn-del">DEL</button>
-<button class="operator" data-val="%">%</button>
-<button class="operator" data-val="/">÷</button>
-<button class="num" data-val="7">7</button>
-<button class="num" data-val="8">8</button>
-<button class="num" data-val="9">9</button>
-<button class="operator" data-val="*">×</button>
-<button class="num" data-val="4">4</button>
-<button class="num" data-val="5">5</button>
-<button class="num" data-val="6">6</button>
-<button class="operator" data-val="-">−</button>
-<button class="num" data-val="1">1</button>
-<button class="num" data-val="2">2</button>
-<button class="num" data-val="3">3</button>
-<button class="operator" data-val="+">+</button>
-<button class="num" data-val="0">0</button>
-<button class="num" data-val=".">.</button>
-<button class="equals" id="btn-equals">=</button>
+
+<div class="calc-block">
+  <div class="calc-title">Basic Calculator</div>
+  <div class="calculator basic-calc">
+    <input type="text" class="display" id="display1" disabled>
+    <div class="buttons">
+      <button class="clear" data-calc="1" data-action="clear">C</button>
+      <button data-calc="1" data-action="del">DEL</button>
+      <button class="operator" data-calc="1" data-val="%">%</button>
+      <button class="operator" data-calc="1" data-val="/">÷</button>
+
+      <button data-calc="1" data-val="7">7</button>
+      <button data-calc="1" data-val="8">8</button>
+      <button data-calc="1" data-val="9">9</button>
+      <button class="operator" data-calc="1" data-val="*">×</button>
+
+      <button data-calc="1" data-val="4">4</button>
+      <button data-calc="1" data-val="5">5</button>
+      <button data-calc="1" data-val="6">6</button>
+      <button class="operator" data-calc="1" data-val="-">−</button>
+
+      <button data-calc="1" data-val="1">1</button>
+      <button data-calc="1" data-val="2">2</button>
+      <button data-calc="1" data-val="3">3</button>
+      <button class="operator" data-calc="1" data-val="+">+</button>
+
+      <button data-calc="1" data-val="0">0</button>
+      <button data-calc="1" data-val=".">.</button>
+      <button class="equals" data-calc="1" data-action="equals-basic">=</button>
+    </div>
+  </div>
 </div>
+
+<div class="calc-block">
+  <div class="calc-title">Scientific Calculator</div>
+  <div class="calculator sci-calc">
+    <input type="text" class="display" id="display2" disabled>
+    <div class="buttons">
+      <button class="func" data-calc="2" data-val="sin(">sin</button>
+      <button class="func" data-calc="2" data-val="cos(">cos</button>
+      <button class="func" data-calc="2" data-val="tan(">tan</button>
+      <button class="func" data-calc="2" data-val="log(">log</button>
+      <button class="func" data-calc="2" data-val="ln(">ln</button>
+
+      <button class="func" data-calc="2" data-val="sqrt(">√</button>
+      <button class="func" data-calc="2" data-val="^">x^y</button>
+      <button class="func" data-calc="2" data-val="(">(</button>
+      <button class="func" data-calc="2" data-val=")">)</button>
+      <button class="clear" data-calc="2" data-action="clear">C</button>
+
+      <button data-calc="2" data-val="7">7</button>
+      <button data-calc="2" data-val="8">8</button>
+      <button data-calc="2" data-val="9">9</button>
+      <button class="operator" data-calc="2" data-val="/">÷</button>
+      <button data-calc="2" data-action="del">DEL</button>
+
+      <button data-calc="2" data-val="4">4</button>
+      <button data-calc="2" data-val="5">5</button>
+      <button data-calc="2" data-val="6">6</button>
+      <button class="operator" data-calc="2" data-val="*">×</button>
+      <button class="func" data-calc="2" data-val="pi">π</button>
+
+      <button data-calc="2" data-val="1">1</button>
+      <button data-calc="2" data-val="2">2</button>
+      <button data-calc="2" data-val="3">3</button>
+      <button class="operator" data-calc="2" data-val="-">−</button>
+      <button class="func" data-calc="2" data-val="e">e</button>
+
+      <button data-calc="2" data-val="0">0</button>
+      <button data-calc="2" data-val=".">.</button>
+      <button class="operator" data-calc="2" data-val="%">%</button>
+      <button class="operator" data-calc="2" data-val="+">+</button>
+      <button class="equals" data-calc="2" data-action="equals-sci">=</button>
+    </div>
+  </div>
 </div>
+
 <script>
-var display = document.getElementById('display');
-document.querySelectorAll('.num, .operator').forEach(function(btn){
-  btn.addEventListener('click', function(){ display.value += btn.getAttribute('data-val'); });
+var display1 = document.getElementById('display1');
+var display2 = document.getElementById('display2');
+
+function getDisplay(calcId) {
+  return calcId === '1' ? display1 : display2;
+}
+
+document.querySelectorAll('button').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var calcId = btn.getAttribute('data-calc');
+    var display = getDisplay(calcId);
+    var val = btn.getAttribute('data-val');
+    var action = btn.getAttribute('data-action');
+
+    if (val !== null) {
+      display.value += val;
+      return;
+    }
+
+    if (action === 'clear') {
+      display.value = '';
+    } else if (action === 'del') {
+      display.value = display.value.slice(0, -1);
+    } else if (action === 'equals-basic') {
+      evaluateBasic(display);
+    } else if (action === 'equals-sci') {
+      evaluateSci(display);
+    }
+  });
 });
-document.getElementById('btn-clear').addEventListener('click', function(){ display.value = ''; });
-document.getElementById('btn-del').addEventListener('click', function(){ display.value = display.value.slice(0,-1); });
-document.getElementById('btn-equals').addEventListener('click', function(){
-  try{
-    if(/^[0-9+\-*/.%\s]*$/.test(display.value) && display.value.trim() !== ''){
+
+function evaluateBasic(display) {
+  try {
+    if (/^[0-9+\-*/.%\s]*$/.test(display.value) && display.value.trim() !== '') {
       display.value = Function('"use strict";return (' + display.value + ')')();
-    } else { display.value = 'Error'; }
-  }catch(e){ display.value = 'Error'; }
-});
-document.addEventListener('keydown', function(e){
-  if(/[0-9+\-*/.%]/.test(e.key)){ display.value += e.key; }
-  else if(e.key === 'Enter'){ document.getElementById('btn-equals').click(); }
-  else if(e.key === 'Backspace'){ display.value = display.value.slice(0,-1); }
-  else if(e.key === 'Escape'){ display.value = ''; }
-});
+    } else {
+      display.value = 'Error';
+    }
+  } catch (e) {
+    display.value = 'Error';
+  }
+}
+
+function evaluateSci(display) {
+  try {
+    var expr = display.value;
+    expr = expr.replace(/sin\(/g, 'Math.sin(');
+    expr = expr.replace(/cos\(/g, 'Math.cos(');
+    expr = expr.replace(/tan\(/g, 'Math.tan(');
+    expr = expr.replace(/ln\(/g, 'Math.log(');
+    expr = expr.replace(/log\(/g, 'Math.log10(');
+    expr = expr.replace(/sqrt\(/g, 'Math.sqrt(');
+    expr = expr.replace(/\^/g, '**');
+    expr = expr.replace(/pi/g, 'Math.PI');
+    expr = expr.replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g, 'Math.E');
+
+    if (/^[0-9+\-*/.%()\s\w]*$/.test(expr)) {
+      var result = Function('"use strict"; return (' + expr + ')')();
+      display.value = Math.round(result * 1e10) / 1e10;
+    } else {
+      display.value = 'Error';
+    }
+  } catch (e) {
+    display.value = 'Error';
+  }
+}
 </script>
+
 </body>
 </html>
