@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Calculators</title>
+<style>
+body{
+  font-family:sans-serif;
+  background:#1e1e2f;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  min-height:100vh;
+  margin:0;
+  padding:40px 20px;
+  gap:30px;
+  flex-wrap:wrap;
+}
+.calc-block{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.calc-title{
+  color:#fff;
+  margin-bottom:15px;
+  font-size:18px;
+}
+.calculator{
+  background:#2b2b3d;
+  border-radius:12px;
+  padding:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+.basic-calc{width:280px;}
+.sci-calc{width:400px;}
+.graph-calc{width:480px;}
+.display{
+  width:100%;
+  height:60px;
+  font-size:24px;
+  text-align:right;
+  background:#111;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  margin-bottom:15px;
+  padding:0 15px;
+  box-sizing:border-box;
+  overflow-x:auto;
+}
+.buttons{
+  display:grid;
+  gap:8px;
+}
+.basic-calc .buttons{grid-template-columns:repeat(4,1fr);}
+.sci-calc .buttons{grid-template-columns:repeat(5,1fr);}
+button{
+  padding:16px 0;
+  font-size:16px;
+  border:none;
+  border-radius:8px;
+  background:#3d3d55;
+  color:#fff;
+  cursor:pointer;
+}
+button:hover{background:#52527a;}
+button.operator{background:#ff9f43;}
+button.operator:hover{background:#ffb26b;}
+button.func{background:#5a67d8;}
+button.func:hover{background:#7a86e8;}
+button.equals{background:#2ecc71;grid-column:span 2;}
+button.equals:hover{background:#4bdf8b;}
+button.clear{background:#e74c3c;}
+button.clear:hover{background:#ff6b5b;}
+
+/* Graphing calculator styles */
+.graph-input-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+}
+.graph-input-row input{
+  flex:1;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  background:#111;
+  color:#fff;
+  font-size:16px;
+  box-sizing:border-box;
+}
+.graph-input-row button{
+  padding:0 16px;
+  width:auto;
+}
+#graphCanvas{
+  background:#111;
+  border-radius:8px;
+  display:block;
+  width:100%;
+  touch-action:none;
+}
+.graph-controls{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-top:10px;
+}
+.graph-controls button{
+  width:auto;
+  padding:8px 16px;
+}
+.func-list{
+  margin-top:10px;
+  color:#ddd;
+  font-size:13px;
+}
+.func-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:4px 8px;
+  background:#1e1e2f;
+  border-radius:6px;
+  margin-bottom:4px;
+}
+.func-row button{
+  width:auto;
+  padding:2px 8px;
+  font-size:12px;
+  background:#e74c3c;
+}
+</style>
+</head>
+<body>
+
+<div class="calc-block">
+  <div class="calc-title">Basic Calculator</div>
+  <div class="calculator basic-calc">
+    <input type="text" class="display" id="display1" disabled>
+    <div class="buttons">
+      <button class="clear" data-calc="1" data-action="clear">C</button>
+      <button data-calc="1" data-action="del">DEL</button>
+      <button class="operator" data-calc="1" data-val="%">%</button>
+      <button class="operator" data-calc="1" data-val="/">÷</button>
+
+      <button data-calc="1" data-val="7">7</button>
+      <button data-calc="1" data-val="8">8</button>
+      <button data-calc="1" data-val="9">9</button>
+      <button class="operator" data-calc="1" data-val="*">×</button>
+
+      <button data-calc="1" data-val="4">4</button>
+      <button data-calc="1" data-val="5">5</button>
+      <button data-calc="1" data-val="6">6</button>
+      <button class="operator" data-calc="1" data-val="-">−</button>
+
+      <button data-calc="1" data-val="1">1</button>
+      <button data-calc="1" data-val="2">2</button>
+      <button data-calc="1" data-val="3">3</button>
+      <button class="operator" data-calc="1" data-val="+">+</button>
+
+      <button data-calc="1" data-val="0">0</button>
+      <button data-calc="1" data-val=".">.</button>
+      <button class="equals" data-calc="1" data-action="equals-basic">=</button>
+    </div>
+  </div>
+</div>
+
+<div class="calc-block">
+  <div class="calc-title">Scientific Calculator</div>
+  <div class="calculator sci-calc">
+    <input type="text" class="display" id="display2" disabled>
+    <div class="buttons">
+      <button class="func" data-calc="2" data-val="sin(">sin</button>
+      <button class="func" data-calc="2" data-val="cos(">cos</button>
+      <button class="func" data-calc="2" data-val="tan(">tan</button>
+      <button class="func" data-calc="2" data-val="log(">log</button>
+      <button class="func" data-calc="2" data-val="ln(">ln</button>
+
+      <button class="func" data-calc="2" data-val="sqrt(">√</button>
+      <button class="func" data-calc="2" data-val="^">x^y</button>
+      <button class="func" data-calc="2" data-val="(">(</button>
+      <button class="func" data-calc="2" data-val=")">)</button>
+      <button class="clear" data-calc="2" data-action="clear">C</button>
+
+      <button data-calc="2" data-val="7">7</button>
+      <button data-calc="2" data-val="8">8</button>
+      <button data-calc="2" data-val="9">9</button>
+      <button class="operator" data-calc="2" data-val="/">÷</button>
+      <button data-calc="2" data-action="del">DEL</button>
+
+      <button data-calc="2" data-val="4">4</button>
+      <button data-calc="2" data-val="5">5</button>
+      <button data-calc="2" data-val="6">6</button>
+      <button class="operator" data-calc="2" data-val="*">×</button>
+      <button class="func" data-calc="2" data-val="pi">π</button>
+
+      <button data-calc="2" data-val="1">1</button>
+      <button data-calc="2" data-val="2">2</button>
+      <button data-calc="2" data-val="3">3</button>
+      <button class="operator" data-calc="2" data-val="-">−</button>
+      <button class="func" data-calc="2" data-val="e">e</button>
+
+      <button data-calc="2" data-val="0">0</button>
+      <button data-calc="2" data-val=".">.</button>
+      <button class="operator" data-calc="2" data-val="%">%</button>
+      <button class="operator" data-calc="2" data-val="+">+</button>
+      <button class="equals" data-calc="2" data-action="equals-sci">=</button>
+    </div>
+  </div>
+</div>
+
+<div class="calc-block">
+  <div class="calc-title">Graphing Calculator</div>
+  <div class="calculator graph-calc">
+    <div class="graph-input-row">
+      <input type="text" id="funcInput" placeholder="e.g. x^2, sin(x), 2*x+1">
+      <button id="btn-plot">Plot</button>
+    </div>
+    <canvas id="graphCanvas" width="440" height="320"></canvas>
+    <div class="graph-controls">
+      <button id="btn-zoom-in">Zoom In</button>
+      <button id="btn-zoom-out">Zoom Out</button>
+      <button id="btn-reset-view">Reset View</button>
+    </div>
+    <div class="func-list" id="funcList"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- Basic & Scientific calculators ---------- */
+var display1 = document.getElementById('display1');
+var display2 = document.getElementById('display2');
+
+function getDisplay(calcId) {
+  return calcId === '1' ? display1 : display2;
+}
+
+document.querySelectorAll('.basic-calc button, .sci-calc button').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var calcId = btn.getAttribute('data-calc');
+    var display = getDisplay(calcId);
+    var val = btn.getAttribute('data-val');
+    var action = btn.getAttribute('data-action');
+
+    if (val !== null) {
+      display.value += val;
+      return;
+    }
+
+    if (action === 'clear') {
+      display.value = '';
+    } else if (action === 'del') {
+      display.value = display.value.slice(0, -1);
+    } else if (action === 'equals-basic') {
+      evaluateBasic(display);
+    } else if (action === 'equals-sci') {
+      evaluateSci(display);
+    }
+  });
+});
+
+function evaluateBasic(display) {
+  try {
+    if (/^[0-9+\-*/.%\s]*$/.test(display.value) && display.value.trim() !== '') {
+      display.value = Function('"use strict";return (' + display.value + ')')();
+    } else {
+      display.value = 'Error';
+    }
+  } catch (e) {
+    display.value = 'Error';
+  }
+}
+
+function evaluateSci(display) {
+  try {
+    var expr = display.value;
+    expr = expr.replace(/sin\(/g, 'Math.sin(');
+    expr = expr.replace(/cos\(/g, 'Math.cos(');
+    expr = expr.replace(/tan\(/g, 'Math.tan(');
+    expr = expr.replace(/ln\(/g, 'Math.log(');
+    expr = expr.replace(/log\(/g, 'Math.log10(');
+    expr = expr.replace(/sqrt\(/g, 'Math.sqrt(');
+    expr = expr.replace(/\^/g, '**');
+    expr = expr.replace(/pi/g, 'Math.PI');
+    expr = expr.replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g, 'Math.E');
+
+    if (/^[0-9+\-*/.%()\s\w]*$/.test(expr)) {
+      var result = Function('"use strict"; return (' + expr + ')')();
+      display.value = Math.round(result * 1e10) / 1e10;
+    } else {
+      display.value = 'Error';
+    }
+  } catch (e) {
+    display.value = 'Error';
+  }
+}
+
+/* ---------- Graphing calculator ---------- */
+var canvas = document.getElementById('graphCanvas');
+var ctx = canvas.getContext('2d');
+var funcInput = document.getElementById('funcInput');
+var funcList = document.getElementById('funcList');
+
+var view = { xMin: -10, xMax: 10, yMin: -10, yMax: 10 };
+var plottedFunctions = [];
+var colors = ['#2ecc71', '#ff9f43', '#5a67d8', '#e74c3c', '#f1c40f'];
+
+function toCanvasX(x) {
+  return (x - view.xMin) / (view.xMax - view.xMin) * canvas.width;
+}
+function toCanvasY(y) {
+  return canvas.height - (y - view.yMin) / (view.yMax - view.yMin) * canvas.height;
+}
+
+function drawGrid() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 1;
+
+  var xRange = view.xMax - view.xMin;
+  var step = Math.pow(10, Math.floor(Math.log10(xRange / 10)));
+  if (xRange / step > 20) step *= 2;
+
+  for (var gx = Math.ceil(view.xMin / step) * step; gx <= view.xMax; gx += step) {
+    var cx = toCanvasX(gx);
+    ctx.beginPath();
+    ctx.moveTo(cx, 0);
+    ctx.lineTo(cx, canvas.height);
+    ctx.stroke();
+  }
+  for (var gy = Math.ceil(view.yMin / step) * step; gy <= view.yMax; gy += step) {
+    var cy = toCanvasY(gy);
+    ctx.beginPath();
+    ctx.moveTo(0, cy);
+    ctx.lineTo(canvas.width, cy);
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle = '#888';
+  ctx.lineWidth = 2;
+  var originX = toCanvasX(0);
+  var originY = toCanvasY(0);
+  ctx.beginPath();
+  ctx.moveTo(originX, 0);
+  ctx.lineTo(originX, canvas.height);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(0, originY);
+  ctx.lineTo(canvas.width, originY);
+  ctx.stroke();
+}
+
+function compileFunc(expr) {
+  var e = expr;
+  e = e.replace(/sin\(/g, 'Math.sin(');
+  e = e.replace(/cos\(/g, 'Math.cos(');
+  e = e.replace(/tan\(/g, 'Math.tan(');
+  e = e.replace(/sqrt\(/g, 'Math.sqrt(');
+  e = e.replace(/abs\(/g, 'Math.abs(');
+  e = e.replace(/log\(/g, 'Math.log10(');
+  e = e.replace(/ln\(/g, 'Math.log(');
+  e = e.replace(/\^/g, '**');
+  e = e.replace(/pi/g, 'Math.PI');
+  e = e.replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g, 'Math.E');
+
+  if (!/^[0-9x+\-*/.%()\s\w]*$/.test(e)) {
+    throw new Error('Invalid expression');
+  }
+  return new Function('x', 'return ' + e + ';');
+}
+
+function plotFunction(fn, color) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  var started = false;
+
+  for (var px = 0; px <= canvas.width; px++) {
+    var x = view.xMin + (px / canvas.width) * (view.xMax - view.xMin);
+    var y;
+    try {
+      y = fn(x);
+    } catch (e) {
+      started = false;
+      continue;
+    }
+    if (typeof y !== 'number' || !isFinite(y)) {
+      started = false;
+      continue;
+    }
+    var cy = toCanvasY(y);
+    if (cy < -1000 || cy > canvas.height + 1000) {
+      started = false;
+      continue;
+    }
+    if (!started) {
+      ctx.moveTo(px, cy);
+      started = true;
+    } else {
+      ctx.lineTo(px, cy);
+    }
+  }
+  ctx.stroke();
+}
+
+function redraw() {
+  drawGrid();
+  plottedFunctions.forEach(function(item) {
+    try {
+      plotFunction(item.fn, item.color);
+    } catch (e) {}
+  });
+}
+
+function renderFuncList() {
+  funcList.innerHTML = '';
+  plottedFunctions.forEach(function(item, index) {
+    var row = document.createElement('div');
+    row.className = 'func-row';
+    var label = document.createElement('span');
+    label.style.color = item.color;
+    label.textContent = 'y = ' + item.expr;
+    var removeBtn = document.createElement('button');
+    removeBtn.textContent = 'x';
+    removeBtn.addEventListener('click', function() {
+      plottedFunctions.splice(index, 1);
+      renderFuncList();
+      redraw();
+    });
+    row.appendChild(label);
+    row.appendChild(removeBtn);
+    funcList.appendChild(row);
+  });
+}
+
+document.getElementById('btn-plot').addEventListener('click', function() {
+  var expr = funcInput.value.trim();
+  if (!expr) return;
+  try {
+    var fn = compileFunc(expr);
+    fn(1); // test it works
+    var color = colors[plottedFunctions.length % colors.length];
+    plottedFunctions.push({ expr: expr, fn: fn, color: color });
+    renderFuncList();
+    redraw();
+    funcInput.value = '';
+  } catch (e) {
+    alert('Could not parse that function. Try things like x^2, sin(x), or 2*x+1');
+  }
+});
+
+funcInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    document.getElementById('btn-plot').click();
+  }
+});
+
+document.getElementById('btn-zoom-in').addEventListener('click', function() {
+  var xc = (view.xMin + view.xMax) / 2;
+  var yc = (view.yMin + view.yMax) / 2;
+  var xr = (view.xMax - view.xMin) * 0.4;
+  var yr = (view.yMax - view.yMin) * 0.4;
+  view = { xMin: xc - xr, xMax: xc + xr, yMin: yc - yr, yMax: yc + yr };
+  redraw();
+});
+
+document.getElementById('btn-zoom-out').addEventListener('click', function() {
+  var xc = (view.xMin + view.xMax) / 2;
+  var yc = (view.yMin + view.yMax) / 2;
+  var xr = (view.xMax - view.xMin) * 0.65;
+  var yr = (view.yMax - view.yMin) * 0.65;
+  view = { xMin: xc - xr, xMax: xc + xr, yMin: yc - yr, yMax: yc + yr };
+  redraw();
+});
+
+document.getElementById('btn-reset-view').addEventListener('click', function() {
+  view = { xMin: -10, xMax: 10, yMin: -10, yMax: 10 };
+  redraw();
+});
+
+/* Drag to pan */
+var isDragging = false;
+var lastX, lastY;
+
+canvas.addEventListener('mousedown', function(e) {
+  isDragging = true;
+  lastX = e.offsetX;
+  lastY = e.offsetY;
+});
+canvas.addEventListener('mousemove', function(e) {
+  if (!isDragging) return;
+  var dx = e.offsetX - lastX;
+  var dy = e.offsetY - lastY;
+  var xShift = -dx / canvas.width * (view.xMax - view.xMin);
+  var yShift = dy / canvas.height * (view.yMax - view.yMin);
+  view.xMin += xShift; view.xMax += xShift;
+  view.yMin += yShift; view.yMax += yShift;
+  lastX = e.offsetX;
+  lastY = e.offsetY;
+  redraw();
+});
+canvas.addEventListener('mouseup', function() { isDragging = false; });
+canvas.addEventListener('mouseleave', function() { isDragging = false; });
+
+redraw();
+</script>
+
+</body>
+</html>
